@@ -1,15 +1,17 @@
+import React from "react";
 import logo from "../image/logo.svg";
-import {Link} from "react-router-dom";
 
-function Header() {
+
+function Header(props) {
+  const {children} = props;
   return (
     <header className="header">
       <img src={logo} alt="Логотип" className="header__logo" />
-      <nav>
-        <Link to="/">Main</Link>
-        <Link to="/sign-in">Sign-In</Link>
-        <Link to="/sign-up">Sign-Up</Link>
-      </nav>
+      <div className="header__data">
+          {/* <span className="header__email">{props.headerEmail}</span>
+          <button className="header__button">{props.headerButton}</button> */}
+      {children}
+      </div>
     </header>
   );
 }

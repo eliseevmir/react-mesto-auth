@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { CurrentUserContext } from "../context/CurrentUserContext";
+import Header from "../components/Header"
 import Main from "../components/Main";
+import Footer from "../components/Footer"
 import PopupWithForm from "../components/PopupWithForm";
 import ImagePopup from "../components/ImagePopup";
 import EditProfilePopup from "../components/EditProfilePopup";
@@ -8,11 +10,18 @@ import EditAvatarPopup from "../components/EditAvatarPopup";
 import AddPlacePopup from "../components/AddPlacePopup";
 import { api } from "../utils/api";
 
+
+import {Link} from "react-router-dom";
+
 const CardsContainer = () => {
   
+  const headerButtton = "Выйти";
+  const headerEmail = "yandex@yandex.ru"
+
+
+
   const {dispath} = useContext(CurrentUserContext);  
   const [cardsPage, setCardsPage] = useState([]);
-
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -31,7 +40,7 @@ const CardsContainer = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [dispath]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
@@ -88,6 +97,7 @@ const CardsContainer = () => {
     api
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
+        console.log()
         setCardsPage((oldCardsPage) => {
           return oldCardsPage.map((item) =>
             item._id === card._id ? newCard : item
@@ -123,6 +133,12 @@ const CardsContainer = () => {
 
   return (
     <>
+      <Header headerEmail={headerEmail} headerButton={headerButtton} />
+        <nav>
+        <Link to="/">Main</Link>
+        <Link to="/sign-in">Sign-In</Link>
+        <Link to="/sign-up">Sign-Up</Link>
+      </nav>
       <Main
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleAddPlaceClick}
@@ -132,6 +148,7 @@ const CardsContainer = () => {
         onCardDelete={handleCardDelete}
         onCardLike={handleCardLike}
       />
+      <Footer />
    
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
