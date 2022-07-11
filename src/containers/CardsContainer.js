@@ -9,23 +9,18 @@ import EditProfilePopup from "../components/EditProfilePopup";
 import EditAvatarPopup from "../components/EditAvatarPopup";
 import AddPlacePopup from "../components/AddPlacePopup";
 import { api } from "../utils/api";
+import { Link } from "react-router-dom";
 
 
-import {Link} from "react-router-dom";
-
-const CardsContainer = () => {
+const CardsContainer = ({email}) => {
   
-  const headerButtton = "Выйти";
-  const headerEmail = "yandex@yandex.ru"
-
-
-
   const {dispath} = useContext(CurrentUserContext);  
   const [cardsPage, setCardsPage] = useState([]);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -131,14 +126,13 @@ const CardsContainer = () => {
       });
   }
 
+
+  
   return (
     <>
-      <Header headerEmail={headerEmail} headerButton={headerButtton} />
-        <nav>
-        <Link to="/">Main</Link>
-        <Link to="/sign-in">Sign-In</Link>
-        <Link to="/sign-up">Sign-Up</Link>
-      </nav>
+      <Header email={email}>
+         <Link className="header__button" to="sign-in">Выход</Link>
+      </Header>
       <Main
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleAddPlaceClick}
