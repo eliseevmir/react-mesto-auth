@@ -1,7 +1,11 @@
 import logo from "../image/logo.svg";
+import { useContext } from "react";
+import { CurrentUserContext } from "../context/CurrentUserContext";
 
 function Header(props) {
-  const { children, email } = props;
+  const { children } = props;
+  const { state } = useContext(CurrentUserContext);
+  const { email } = state;
 
   return (
     <header className="header">

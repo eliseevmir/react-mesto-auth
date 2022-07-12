@@ -1,3 +1,5 @@
+import { defaultUserState } from "./CurrentUserContext";
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "setAvatar": {
@@ -12,6 +14,18 @@ const reducer = (state, action) => {
         ...action.payload,
       };
     }
+    case "setLogged": {
+      return {
+        ...state,
+        loggedIn: action.payload,
+      };
+    }
+    case "signOut": {
+      return {
+        ...defaultUserState,
+      };
+    }
+
     default:
       return state;
   }

@@ -12,30 +12,34 @@ import { CurrentUserContext } from "../context/CurrentUserContext";
 function Login() {
   const history = useHistory();
   const [popupInfo, setPopupInfo] = useState(false);
-  const { handleLogin } = useContext(CurrentUserContext);
+  const { dispatch } = useContext(CurrentUserContext);
 
-  const [state, setState] = useState({
+  const [inputValue, setInputValue] = useState({
     password: "",
     email: "",
   });
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setState({ ...state, [name]: value });
+    setInputValue({ ...inputValue, [name]: value });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    const { password, email } = state;
+    const { password, email } = inputValue;
 
     auth.authorization(password, email).then((data) => {
       if (data.token) {
-        setState({
+        setInputValue({
           password: "",
           email: "",
         });
-        handleLogin();
+        dispatch({
+          type: "setLogged",
+          payload: true,
+        });
+
         history.push("/");
       } else {
         openStatusAuth();
@@ -59,7 +63,7 @@ function Login() {
         </Link>
       </Header>
       <AuthForm
-        state={state}
+        state={inputValue}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
       >

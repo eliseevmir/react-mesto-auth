@@ -1,41 +1,39 @@
 import { useState, useEffect, useContext } from "react";
 import { CurrentUserContext } from "../context/CurrentUserContext";
-import Header from "../components/Header"
+import Header from "../components/Header";
 import Main from "../components/Main";
-import Footer from "../components/Footer"
+import Footer from "../components/Footer";
 import PopupWithForm from "../components/PopupWithForm";
 import ImagePopup from "../components/ImagePopup";
 import EditProfilePopup from "../components/EditProfilePopup";
 import EditAvatarPopup from "../components/EditAvatarPopup";
 import AddPlacePopup from "../components/AddPlacePopup";
 import { api } from "../utils/api";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-
-const CardsContainer = ({email}) => {
-  
-  const {dispath} = useContext(CurrentUserContext);  
+const CardsContainer = () => {
+  const { dispatch } = useContext(CurrentUserContext);
   const [cardsPage, setCardsPage] = useState([]);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
-
+  const history = useHistory();
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then((res) => {
         const [userData, cardsPage] = res;
-        dispath({
-            type: "setUser",
-            payload: userData,
-        })
+        dispatch({
+          type: "setUser",
+          payload: userData,
+        });
         setCardsPage([...cardsPage]);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [dispath]);
+  }, [dispatch]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
@@ -64,10 +62,10 @@ const CardsContainer = ({email}) => {
     api
       .editDataProfile(name, about)
       .then((res) => {
-          dispath({
-            type: "setUser",
-            payload: res,
-        })
+        dispatch({
+          type: "setUser",
+          payload: res,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -77,11 +75,11 @@ const CardsContainer = ({email}) => {
   function handleUpdateAvatar({ avatar }) {
     api
       .changeAvatarProfile(avatar)
-      .then((res) =>{
-          dispath({
-            type: "setUser",
-            payload: res,
-        })
+      .then((res) => {
+        dispatch({
+          type: "setUser",
+          payload: res,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -92,7 +90,7 @@ const CardsContainer = ({email}) => {
     api
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
-        console.log()
+        console.log();
         setCardsPage((oldCardsPage) => {
           return oldCardsPage.map((item) =>
             item._id === card._id ? newCard : item
@@ -126,12 +124,25 @@ const CardsContainer = ({email}) => {
       });
   }
 
+  function handleSignOutClick() {
+    dispatch({
+      type: "signOut",
 
-  
+      // type: "setLogged",
+      // payload: false,
+    });
+    localStorage.removeItem("token");
+
+    history.push("/sign-in");
+    // window.location = "/sign-in";
+  }
+
   return (
     <>
-      <Header email={email}>
-         <Link className="header__button" to="sign-in">Выход</Link>
+      <Header>
+        <button className="header__button" onClick={handleSignOutClick}>
+          Выход
+        </button>
       </Header>
       <Main
         onEditProfile={handleEditProfileClick}
@@ -143,7 +154,7 @@ const CardsContainer = ({email}) => {
         onCardLike={handleCardLike}
       />
       <Footer />
-   
+
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
       <EditProfilePopup
