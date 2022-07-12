@@ -127,14 +127,9 @@ const CardsContainer = () => {
   function handleSignOutClick() {
     dispatch({
       type: "signOut",
-
-      // type: "setLogged",
-      // payload: false,
     });
     localStorage.removeItem("token");
-
     history.push("/sign-in");
-    // window.location = "/sign-in";
   }
 
   return (

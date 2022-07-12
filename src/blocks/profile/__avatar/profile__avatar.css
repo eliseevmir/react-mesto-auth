@@ -30,4 +30,5 @@
 
 .profile__avatar:hover::before {
   opacity: 0.8;
+  cursor: pointer;
 }
