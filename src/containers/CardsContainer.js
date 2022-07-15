@@ -12,7 +12,8 @@ import { api } from "../utils/api";
 import { useHistory } from "react-router-dom";
 
 const CardsContainer = () => {
-  const { dispatch } = useContext(CurrentUserContext);
+  const { state, dispatch } = useContext(CurrentUserContext);
+  const { loggedIn } = state;
   const [cardsPage, setCardsPage] = useState([]);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -21,19 +22,21 @@ const CardsContainer = () => {
   const history = useHistory();
 
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then((res) => {
-        const [userData, cardsPage] = res;
-        dispatch({
-          type: "setUser",
-          payload: userData,
+    if (loggedIn) {
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then((res) => {
+          const [userData, cardsPage] = res;
+          dispatch({
+            type: "setUser",
+            payload: userData,
+          });
+          setCardsPage([...cardsPage]);
+        })
+        .catch((err) => {
+          console.log(err);
         });
-        setCardsPage([...cardsPage]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [dispatch]);
+    }
+  }, [dispatch, loggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
