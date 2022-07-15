@@ -12,17 +12,19 @@ function ProtectedRoute({ component: Component, ...props }) {
     const jwt = localStorage.getItem("token");
 
     if (jwt) {
-      auth.getContent(jwt).then((res) => {
-        dispatch({
-          type: "setUser",
-          payload: {
-            loggedIn: true,
-            email: res.data.email,
-          },
-        });
-
-        history.push("/");
-      });
+      auth
+        .getContent(jwt)
+        .then((res) => {
+          dispatch({
+            type: "setUser",
+            payload: {
+              loggedIn: true,
+              email: res.data.email,
+            },
+          });
+          history.push("/");
+        })
+        .catch((res) => console.log(res));
     }
   }, [dispatch, history]);
 
